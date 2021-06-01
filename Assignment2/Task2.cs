@@ -9,9 +9,9 @@ namespace Task2
 {
 	public class Program
 	{
-		public class FiniteStateMachine
+		public class FiniteStateMachine // https://stackoverflow.com/questions/5923767/simple-state-machine-example-in-c
 		{
-			interface IAction { }
+			interface IState { } // Looking at Mario implementation https://www.c-sharpcorner.com/article/understanding-state-design-pattern-by-implementing-finite-state/
 
 			public enum States { S0, S1, S2, }
 			public States State { get; set; }
