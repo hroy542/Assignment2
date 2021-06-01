@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using System.IO;
 
 namespace Task2
 {
@@ -11,21 +11,55 @@ namespace Task2
 	{
 		public class FiniteStateMachine
 		{
+			interface IAction { }
+
 			public enum States { S0, S1, S2, }
 			public States State { get; set; }
 
-			public enum Events { W, X, Y, Z, }
+			public enum Events { a, b, c }
 
-			private Action[,] FSM;
+			// flags to ensure both actions for state transition (not sure if needed)
+			public bool X_flag = false;
+			public bool Y_flag = false;
+			public bool Z_flag = false;
+
+			public delegate void delActions();
+			private delActions[,] FSM;
 
 			public FiniteStateMachine() // Maybe use finite state table (task 1)
-            {
-				this.FSM = new Action[3, 3] { 
+			{
+				delActions actions_XY, actions_XZ;
+				actions_XY = (delActions)X + (delActions)Y; // Perform actions X and Y 
+				actions_XZ = (delActions)X + (delActions)Z; // Perform actions X and Z
+
+				this.FSM = new delActions[3, 3] { 
                 //a,			b,					c,			
-                {actionX,		null,               null},     //S0
-                {actionY,       actionZ,			null},     //S1
-                {null,          actionX,            null} };   //S2
+                {actions_XY,    this.do_nothing,    this.do_nothing},     //S0
+                {this.W,        actions_XZ,         this.do_nothing},     //S1
+                {this.W,        this.do_nothing,    actions_XY} };		  //S2
 			}
+			public void Process(Events Event)
+            {
+				this.FSM[(int)this.State, (int)Event].Invoke();
+            }
+
+			public void W()
+			{
+				this.State = States.S0;
+			}
+			public void X()
+			{
+				this.State = States.S1;
+			}
+			public void Y()
+			{
+				this.State = States.S1;
+			}
+			public void Z()
+			{
+				this.State = States.S2;
+			}
+			private void do_nothing() { return; }
 
 			public static void Main(string[] args)
 			{
@@ -33,11 +67,8 @@ namespace Task2
 
 				Console.WriteLine("Beginning in S0");
 				Console.WriteLine("Press 'a' to start:");
+				Console.ReadKey();
 
-				if (Console.ReadKey() == "a")
-                {
-
-                }
 			}
 		}
 	}
