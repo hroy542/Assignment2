@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Task3 // EXTENSION OF TASK 2 - RIGHT NOW JUST IMPLEMENTATION OF TASK 3 FSM
+namespace Task3 // EXTENSION OF TASK 2 - RIGHT NOW ITS JUST IMPLEMENTATION OF TASK 3 FSM (NEED TO ADD THREADING)
 {
 	public class Program
 	{
@@ -13,10 +13,13 @@ namespace Task3 // EXTENSION OF TASK 2 - RIGHT NOW JUST IMPLEMENTATION OF TASK 3
 			public enum States { SA, SB }
 			public States State { get; set; }
 
-			public enum Actions { J,K,L }
+			public enum Actions { a, S1 }
 
 			public delegate void delActions();
 			private delActions[,] FSM;
+			
+			public bool J_flag = false;
+			public bool K_flag = false;
 
 			public FiniteStateMachine() // Maybe use finite state table (task 1)
 			{
@@ -31,19 +34,27 @@ namespace Task3 // EXTENSION OF TASK 2 - RIGHT NOW JUST IMPLEMENTATION OF TASK 3
 
 			public void J()
 			{
-				this.State = States.SB; // maybe use flags to ensure all three done to move states (in L()?)
+				J_flag = true;
+				Console.WriteLine("Action J");
 			}
 			public void K()
 			{
-				this.State = States.SB;
+				K_flag = true;
+				Console.WriteLine("Action K");
 			}
 			public void L()
 			{
-				this.State = States.SB;
+				if ((J_flag) && (K_flag)) {
+					this.State = States.SB;
+					Console.WriteLine("Action L");
+					J_flag = false;
+					K_flag = false;
+				}
 			}
 			private void do_nothing() { return; }
 			public static void Main(string[] args)
 			{
+				// THREADING HERE
 				var FSM = new FiniteStateMachine();
 
 				Console.WriteLine("Beginning in SB");
