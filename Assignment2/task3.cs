@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Sytem.IO;
 
 namespace Task3 // EXTENSION OF TASK 2 - RIGHT NOW ITS JUST IMPLEMENTATION OF TASK 3 FSM (NEED TO ADD THREADING)
 {
