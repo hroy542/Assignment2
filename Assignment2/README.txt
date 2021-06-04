@@ -15,7 +15,7 @@ keyboard. Furthermore, this task ensures all data regarding actions and trigger 
 to a text file which the user specifies.
 
 Task3.cs
-Assignment 2 - Task 3: This task develops the console application of task 3 such that 2 concurrent, dependent,
-synchoronous finite state machines are created. The task uses multi-threading in order to achieve this whereby,
-multiple actions and thus finite state machines can occur at the same time.
+Assignment 2 - Task 3: This task further develops the console application of task 2 such that 2 concurrent, dependent,
+synchoronous finite state machines are created. The task uses multi-threading in order to achieve this whereby, the
+finite state machine created by task 2 is the main thread and a new finite state machine operates as another thread.
 
