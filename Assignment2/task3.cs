@@ -269,10 +269,11 @@ namespace Task3
 
 					if (currentState2 != fsm2.State) { Console.WriteLine("Task 3 FSM now in state " + fsm2.State + "\n"); } // Display task 3 state
 				}
-				else // if 'q' has been pressed - closing application
+				else if (cki.Key == ConsoleKey.Q) // if 'q' has been pressed - closing application
 				{
 					timeStamp = GetTimestamp(DateTime.Now);
 					allText = string.Concat(allText, timeStamp + "	'q' key pressed - Closing Application\n");
+					Console.WriteLine("Now quitting application...");
 
 					// Ask user for file name input for .txt
 					Console.WriteLine("Please input a fully qualified text file name: ");
@@ -289,8 +290,7 @@ namespace Task3
 
 					File.WriteAllText(path, allText); // writes log to text file
 
-					Console.WriteLine("\nSuccessful loggin to file");
-					Console.WriteLine("Now quitting application...");
+					Console.WriteLine("\nData successfully logged to file");
 				}
 
 			} while (cki.Key != ConsoleKey.Q); // continue loop until user presses 'q'
