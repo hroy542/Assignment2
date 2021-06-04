@@ -65,6 +65,7 @@ namespace Task_1
 
         //Methods
         public void ExecuteAction(FiniteStateTable FSM, int state, int input)
+        // executes a state transition when the trigger action occurs
         {
             Action Act = FSM.GetActions(state, input);
             int nextState = FSM.GetNextState(state, input);
@@ -72,18 +73,22 @@ namespace Task_1
             FSM.state = nextState;
         }
         public void SetNextState(int currentState, int Event, int nextState)
+        // sets the next state index
         {
             this.FST[Event, currentState].nextState = nextState;
         }
         public int GetNextState(int currentState, int Event)
+        // returns the next state index
         {
             return this.FST[Event, currentState].nextState;
         }
         public void SetActions(int currentState, int Event, Action action)
+        // sets the actions associated with the transition
         {
             this.FST[Event, currentState].FSMactions = action;
         }
         public Action GetActions(int currentState, int Event)
+        // returns the actions associated with the transition
         {
             return this.FST[Event, currentState].FSMactions;
         }
