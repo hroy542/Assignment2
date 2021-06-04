@@ -2,9 +2,7 @@
  with the user through the keyboard. State transitions and actions are triggered using 'a', 'b', or 'c' and the application is 
  quit using 'q'. A user inputted text file containing the triggered events and actions with timestamps is also created
 
- Authors: 
- Leighton Jensen (ljen819)
- Hritom Roy (hroy542)
+ Authors: Leighton Jensen (ljen819), Hritom Roy (hroy542)
  */
 
 // System set-up
