@@ -3,22 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.IO;
 
-namespace Task3 // NEED TO ADD THREADING IDK HOW
+namespace Task3 // EXTENSION OF TASK 2 - RIGHT NOW ITS JUST IMPLEMENTATION OF TASK 3 FSM (NEED TO ADD THREADING)
 {
 	public class Program
 	{
-		public static void Main(string[] args)
-		{
-			// THREADING HERE
-			var fsm1 = new FiniteStateMachine1();
-			var fsm2 = new FiniteStateMachine2();
-
-
-			Console.WriteLine("Beginning in SB");
-			Console.WriteLine("Press 'a' to start:");
-		}
-
 		public class FiniteStateMachine1
 		{
 			public enum States { S0, S1, S2, } // Set-up states for task 2 
@@ -89,27 +79,12 @@ namespace Task3 // NEED TO ADD THREADING IDK HOW
 
 		public class FiniteStateMachine2
 		{
-			public enum States { SA, SB } // Set-up states for task 3
+			public enum States { SB, SA } // Set-up states for task 3
 			public States State { get; set; } // getter and setter for task 3 states
 
-			public enum Actions { a, S1 } // actions associated with task 3
-
-			public delegate void delActions();
-			private delActions[,] FSM;
 
 			public bool J_flag = false;
 			public bool K_flag = false;
-
-			public FiniteStateMachine2() // Implement task 3 finite state machine
-			{
-				delActions actions_JKL;
-				actions_JKL = (delActions)J + (delActions)K + (delActions)L; // Perform actions J, K, L 
-
-				this.FSM = new delActions[2, 2] { 
-                //a,				in S1,		
-                {this.transition,   this.do_nothing},	//SA
-                {this.do_nothing,   actions_JKL}};      //SB  
-			}
 
 			public void J() // method for Action J
 			{
@@ -137,7 +112,118 @@ namespace Task3 // NEED TO ADD THREADING IDK HOW
 				this.State = States.SB;
             }
 
-			private void do_nothing() { return; }
+		}
+
+		public static String GetTimestamp(DateTime value) // method that gets time stamp 
+		{
+			string timeStamp = value.ToString("yyyyMMddHHmmssffff");
+			return timeStamp.Substring(4, 2) + "/" + timeStamp.Substring(6, 2) + " " + timeStamp.Substring(8, 2) + ":" + timeStamp.Substring(10, 2) + ":" + timeStamp.Substring(12, 2) + " ";
+		}
+
+		public static void Main(string[] args) // Entry point to program - begin main thread
+		{
+			// THREADING HERE
+			var fsm1 = new FiniteStateMachine1();
+			var fsm2 = new FiniteStateMachine2();
+
+			var currentState1 = fsm1.State;
+			var currentState2 = fsm2.State;
+
+			bool SB_flag = true;
+			bool SA_flag = false;
+
+			// Ask user for file name input for .txt
+			Console.WriteLine("Please input a fully qualified text file name: ");
+			string textInput = Console.ReadLine();
+
+			// while loop that ensures user inputs .txt file is created
+			while (textInput.Substring(textInput.Length - 4) != ".txt")
+			{
+				Console.WriteLine("\nError: Re-enter text file name:");
+				textInput = Console.ReadLine();
+			}
+
+			var path = @textInput; // sets the file path to input
+
+			ConsoleKeyInfo cki;
+
+			// Console interface with user
+			Console.WriteLine("\nTask 2 FSM beginning in state " + fsm1.State);
+			Console.WriteLine("Task 3 FSM beginning in state " + fsm2.State);
+			Console.WriteLine("Press any key to start:\n");
+			Console.WriteLine("Press 'q' to quit appllication\n");
+
+			File.WriteAllText(path, "Loggging Data:\n"); // being logging data
+
+			do
+			{
+				cki = Console.ReadKey(true);
+
+				Thread thrJ = new Thread(fsm2.J);
+				Thread thrK = new Thread(fsm2.K);
+				Thread thrL = new Thread(fsm2.L);
+				Thread thrTransition = new Thread(fsm2.transition);
+
+				currentState1 = fsm1.State;
+				currentState2 = fsm2.State;
+
+				if (cki.Key == ConsoleKey.A) // if user inputs 'a'
+				{
+					string timeStamp = GetTimestamp(DateTime.Now);
+					File.AppendAllText(path, timeStamp + " 'a' key pressed\n");
+
+					fsm1.Process(FiniteStateMachine1.Events.a); // Process method ran for event a for FSM
+
+					if (SA_flag)
+					{
+						thrTransition.Start();
+						Thread.Sleep(1);
+
+						SA_flag = false;
+						SB_flag = true;
+					}
+
+				}
+				else if (cki.Key == ConsoleKey.B)
+				{
+					string timeStamp = GetTimestamp(DateTime.Now);
+					File.AppendAllText(path, timeStamp + " 'b' key pressed\n");
+
+					fsm1.Process(FiniteStateMachine1.Events.b); // Process method ran for event b for FSM
+				}
+				else if (cki.Key == ConsoleKey.C)
+				{
+					string timeStamp = GetTimestamp(DateTime.Now);
+					File.AppendAllText(path, timeStamp + " 'c' key pressed\n");
+
+					fsm1.Process(FiniteStateMachine1.Events.c); // Process method ran for event c for FSM
+				}
+
+				if (cki.Key != ConsoleKey.Q)
+				{
+					if (currentState1 != fsm1.State) { Console.WriteLine("Task 2 FSM now in state " + fsm1.State + "\n"); } // Write which state currently in
+
+					if ((fsm1.State == FiniteStateMachine1.States.S1) && (SB_flag))
+					{
+						thrJ.Start();
+						thrK.Start();
+						thrL.Start();
+						Thread.Sleep(1);
+
+						SB_flag = false;
+						SA_flag = true;
+					}
+
+					if (currentState2 != fsm2.State) { Console.WriteLine("Task 3 FSM now in state " + fsm2.State + "\n"); }
+				}
+				else
+				{
+					string timeStamp = GetTimestamp(DateTime.Now);
+					File.AppendAllText(path, timeStamp + " 'q' key pressed - Closing Application\n");
+					Console.WriteLine("Now quitting application...");
+				}
+
+			} while (cki.Key != ConsoleKey.Q); // continue loop until user presses 'q'
 
 		}
 	}
