@@ -6,10 +6,8 @@
  Authors: Leighton Jensen (ljen819), Hritom Roy (hroy542)
  */
 
+// System set-up
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.IO;
 
