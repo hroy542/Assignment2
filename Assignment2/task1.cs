@@ -1,4 +1,12 @@
-﻿using System;
+/* Assignment 2: Task 1 - This task asks us to create a definition for a 
+Finite State Table class including; A 2D named FST, A struct named cell_FST,
+SetNextState() and SetActions() which set the contents of any cell in the
+FST and GetNextState() and GetActions() which returns the contents of that
+cell.
+Authors: Leighton Jensen (ljen819), Hritom Roy (hroy542)
+*/
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,8 +14,12 @@ using System.Threading.Tasks;
 
 namespace Task_1
 {
+    // Action class defines an action object, it contains a variable 
+    // that stores the actions name(s) and a method that executes the
+    // action when the trigger action calls it.
     class Action
     {
+        // constructors
         public Action()
         {
             string[] Act = new string[] { "do_nothing" };
@@ -17,7 +29,11 @@ namespace Task_1
         {
             this.name = ActionName;
         }
+        
+        //variables
         public string[] name;
+        
+        //methods
         public void ExecuteAction()
         {
             if (this.name[0] != "do_nothing")
