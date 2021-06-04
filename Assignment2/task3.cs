@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using System.IO;
 
-namespace Task3 // EXTENSION OF TASK 2 - RIGHT NOW ITS JUST IMPLEMENTATION OF TASK 3 FSM (NEED TO ADD THREADING)
+namespace Task3
 {
 	public class Program
 	{
