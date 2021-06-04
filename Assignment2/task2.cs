@@ -38,10 +38,11 @@ namespace task2
 				actions_XZ = (delActions)X + (delActions)Z; // Perform actions X and Z
 
 				this.FSM = new delActions[3, 3] { 
-                //a,			b,					c,			
-                {actions_XY,    this.do_nothing,    this.do_nothing},     //S0
-                {this.W,        actions_XZ,         this.do_nothing},     //S1
-                {this.W,        this.do_nothing,    actions_XY} };        //S2
+                			//a,			b,		c,			
+                			{actions_XY,    this.do_nothing,    this.do_nothing},     //S0
+                			{this.W,        actions_XZ,         this.do_nothing},     //S1
+                			{this.W,        this.do_nothing,    actions_XY} 	  //S2
+				};
 			}
 
 			public void Process(Events Event) // Method that invokes the finite state machine
@@ -94,31 +95,13 @@ namespace task2
 			var FSM = new FiniteStateMachine(); // Creates instance of FiniteStateMachine()
 
 			var currentState = FSM.State; // get the current state
-
-			// Ask user for file name input for .txt
-			/*Console.WriteLine("Please input a fully qualified text file name: ");
-			string textInput = Console.ReadLine();
-
-			// while loop that ensures user inputs .txt file is created
-			while (textInput.Substring(textInput.Length - 4) != ".txt")
-			{
-				Console.WriteLine("\nError: Re-enter text file name:");
-				textInput = Console.ReadLine();
-			}
-
-			var path = @textInput; // sets the file path to input*/
-
 			ConsoleKeyInfo cki;
 
 			// Console interface with user
 			Console.WriteLine("\nBeginning in state " + FSM.State);
 			Console.WriteLine("Press any key to start:\n");
 			Console.WriteLine("Press 'q' to quit appllication\n");
-
-            FSM.Logdata = FSM.Logdata.Insert(FSM.Logdata.Length - 1, "Loggging Data:\n");
-            
-			//File.WriteAllText(path, "Loggging Data:\n"); // being logging data
-
+           		FSM.Logdata = FSM.Logdata.Insert(FSM.Logdata.Length - 1, "Loggging Data:\n");
 			do
 			{
 				currentState = FSM.State; // update current state
@@ -128,21 +111,18 @@ namespace task2
 				if (cki.Key == ConsoleKey.A) // if user inputs 'a'
 				{
 					string timeStamp = GetTimestamp(DateTime.Now);
-					//File.AppendAllText(path, timeStamp + " 'a' key pressed\n");
 					FSM.Logdata = FSM.Logdata.Insert((FSM.Logdata.Length - 1), timeStamp + " 'a' key pressed\n");
 					FSM.Process(FiniteStateMachine.Events.a); // Process method ran for event a for FSM
 				}
 				else if (cki.Key == ConsoleKey.B)
 				{
 					string timeStamp = GetTimestamp(DateTime.Now);
-					//File.AppendAllText(path, timeStamp + " 'b' key pressed\n");
 					FSM.Logdata = FSM.Logdata.Insert((FSM.Logdata.Length - 1), timeStamp + " 'b' key pressed\n");
 					FSM.Process(FiniteStateMachine.Events.b); // Process method ran for event b for FSM
 				}
 				else if (cki.Key == ConsoleKey.C)
 				{
 					string timeStamp = GetTimestamp(DateTime.Now);
-					//File.AppendAllText(path, timeStamp + " 'c' key pressed\n");
 					FSM.Logdata = FSM.Logdata.Insert((FSM.Logdata.Length - 1), timeStamp + " 'c' key pressed\n");
 					FSM.Process(FiniteStateMachine.Events.c); // Process method ran for event c for FSM
 				}
@@ -154,7 +134,6 @@ namespace task2
 				else if (cki.Key == ConsoleKey.Q) // Console interface for quitting application
 				{
 					string timeStamp = GetTimestamp(DateTime.Now);
-					//File.AppendAllText(path, timeStamp + " 'q' key pressed - Closing Application\n");
 					FSM.Logdata = FSM.Logdata.Insert((FSM.Logdata.Length - 1), timeStamp + " 'q' key pressed - Closing Application\n");
 					Console.WriteLine("Now quitting application...");
 
@@ -173,12 +152,9 @@ namespace task2
 					var path = @textInput; // sets the file path to input
 					
 					File.WriteAllText(path, FSM.Logdata);
-
-
 				}
 
 			} while (cki.Key != ConsoleKey.Q); // continue loop until user presses 'q'
-
 		}
 	}
 }
