@@ -1,8 +1,8 @@
-﻿/* Assignment 2: Task 2 - This task creates a specified finite state machine and develops a console appliaction that interfaces
- with the user through the keyboard. State transitions and actions are triggered using 'a', 'b', or 'c' and the application is 
- quit using 'q'. A user inputted text file containing the triggered events and actions with timestamps is also created
- Authors: Leighton Jensen (ljen819), Hritom Roy (hroy542)
- */
+/* Assignment 2: Task 2 - This task creates a specified finite state machine and develops a console appliaction that interfaces
+with the user through the keyboard. State transitions and actions are triggered using 'a', 'b', or 'c' and the application is 
+quit using 'q'. A user inputted text file containing the triggered events and actions with timestamps is also created
+Authors: Leighton Jensen (ljen819), Hritom Roy (hroy542)
+*/
 
 // System set-up
 using System;
@@ -24,8 +24,6 @@ namespace task2
 			public enum Events { a, b, c } // Set-up different keyboard events
 
 			public bool X_flag = false; // flags to ensure all actions occur for state transition
-
-			public string Logdata = " ";
 
 			// Create delegate for FSM action implementation
 			public delegate void delActions();
@@ -82,7 +80,7 @@ namespace task2
 
 		}
 
-		public static String GetTimestamp(DateTime value) // method that gets time stamp 
+		public static String GetTimestamp(DateTime value) // method that gets time stamp in DD/MM hh:mm:ss form
 		{
 			string timeStamp = value.ToString("yyyyMMddHHmmssffff");
 			// returns time stamp string in DD/MM hh:mm:ss form
@@ -95,13 +93,22 @@ namespace task2
 			var FSM = new FiniteStateMachine(); // Creates instance of FiniteStateMachine()
 
 			var currentState = FSM.State; // get the current state
+
+			// flags for states
+			bool S0_flag = true;
+			bool S1_flag = false;
+			bool S2_flag = false;
+
+			// strings for data logging
+			string timeStamp;
+			string allText = "";
+
 			ConsoleKeyInfo cki;
 
 			// Console interface with user
 			Console.WriteLine("\nBeginning in state " + FSM.State);
 			Console.WriteLine("Press any key to start:\n");
 			Console.WriteLine("Press 'q' to quit appllication\n");
-           		FSM.Logdata = FSM.Logdata.Insert(FSM.Logdata.Length - 1, "Loggging Data:\n");
 			do
 			{
 				currentState = FSM.State; // update current state
@@ -110,21 +117,63 @@ namespace task2
 
 				if (cki.Key == ConsoleKey.A) // if user inputs 'a'
 				{
-					string timeStamp = GetTimestamp(DateTime.Now);
-					FSM.Logdata = FSM.Logdata.Insert((FSM.Logdata.Length - 1), timeStamp + " 'a' key pressed\n");
+					timeStamp = GetTimestamp(DateTime.Now);
+					allText = string.Concat(allText, timeStamp + "	'a' key pressed\n");
 					FSM.Process(FiniteStateMachine.Events.a); // Process method ran for event a for FSM
+
+					if (S0_flag) // if in S0
+					{
+						// change state flags and append to logging string
+						S1_flag = true;
+						S0_flag = false;
+						S2_flag = false;
+						allText = string.Concat(allText, timeStamp + "	Action X\n");
+						allText = string.Concat(allText, timeStamp + "	Action Y\n");
+					}
+					else if (S1_flag || S2_flag) // if in S1 or S2
+					{
+						// change state flags and append to logging string
+						S0_flag = true;
+						S1_flag = false;
+						S2_flag = false;
+						allText = string.Concat(allText, timeStamp + "	Action W\n");
+					}
 				}
 				else if (cki.Key == ConsoleKey.B)
 				{
-					string timeStamp = GetTimestamp(DateTime.Now);
-					FSM.Logdata = FSM.Logdata.Insert((FSM.Logdata.Length - 1), timeStamp + " 'b' key pressed\n");
-					FSM.Process(FiniteStateMachine.Events.b); // Process method ran for event b for FSM
+					timeStamp = GetTimestamp(DateTime.Now);
+					if (S1_flag) // if current state is S1, trigger process
+					{
+						FSM.Process(FiniteStateMachine.Events.b); // Process method ran for event b for FSM
+
+						// change state flags
+						S2_flag = true;
+						S0_flag = false;
+						S1_flag = false;
+
+						// Add actions and events to logging string
+						allText = string.Concat(allText, timeStamp + "	'b' key pressed\n");
+						allText = string.Concat(allText, timeStamp + "	Action X\n");
+						allText = string.Concat(allText, timeStamp + "	Action Z\n");
+					}
 				}
 				else if (cki.Key == ConsoleKey.C)
 				{
-					string timeStamp = GetTimestamp(DateTime.Now);
-					FSM.Logdata = FSM.Logdata.Insert((FSM.Logdata.Length - 1), timeStamp + " 'c' key pressed\n");
-					FSM.Process(FiniteStateMachine.Events.c); // Process method ran for event c for FSM
+					timeStamp = GetTimestamp(DateTime.Now);
+					if (S2_flag) // if current state is S2, trigger process
+					{
+						FSM.Process(FiniteStateMachine.Events.c); // Process method ran for event c for FSM
+
+						// change state flags
+						S1_flag = true;
+						S0_flag = false;
+						S2_flag = false;
+
+						// Add actions and events to logging string
+						allText = string.Concat(allText, timeStamp + "	'c' key pressed\n");
+						allText = string.Concat(allText, timeStamp + "	Action X\n");
+						allText = string.Concat(allText, timeStamp + "	Action Y\n");
+					}
 				}
 
 				if ((cki.Key != ConsoleKey.Q) && (currentState != FSM.State)) // if not quitting and a state transition has occurred
@@ -133,10 +182,9 @@ namespace task2
 				}
 				else if (cki.Key == ConsoleKey.Q) // Console interface for quitting application
 				{
-					string timeStamp = GetTimestamp(DateTime.Now);
-					FSM.Logdata = FSM.Logdata.Insert((FSM.Logdata.Length - 1), timeStamp + " 'q' key pressed - Closing Application\n");
+					timeStamp = GetTimestamp(DateTime.Now);
+					allText = string.Concat(allText, timeStamp + "	'q' key pressed - Closing Application\n");
 					Console.WriteLine("Now quitting application...");
-
 
 					// Ask user for file name input for .txt
 					Console.WriteLine("Please input a fully qualified text file name: ");
@@ -150,8 +198,10 @@ namespace task2
 					}
 
 					var path = @textInput; // sets the file path to input
-					
-					File.WriteAllText(path, FSM.Logdata);
+
+					File.WriteAllText(path, allText); // writes log to text file
+
+					Console.WriteLine("\nData successfully logged to file");
 				}
 
 			} while (cki.Key != ConsoleKey.Q); // continue loop until user presses 'q'
